@@ -29,7 +29,7 @@ UserSchema.statics.upsertTwitterUser = function(
     {
       'twitterProvider.id': profile.id
     },
-    function(err, user) {
+    (err, user) => {
       // no user was found, lets create a new one
       if (!user) {
         var newUser = new that({
@@ -41,7 +41,7 @@ UserSchema.statics.upsertTwitterUser = function(
           }
         });
 
-        newUser.save(function(error, savedUser) {
+        newUser.save((error, savedUser) => {
           if (error) {
             console.log(error);
           }

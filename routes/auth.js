@@ -11,8 +11,8 @@ const router = express.Router();
 passport.use(
   new TwitterTokenStrategy(
     {
-      consumerKey: 'ggav0NYrjucilG6qyLzXQhqY5',
-      consumerSecret: 'EzseR9UJlENQa4LpVrIeli1wxsCgypCS6drTgCICsPR9la6Uif',
+      consumerKey: process.env.CONSUMER_KEY,
+      consumerSecret: process.env.CONSUMER_SECRET,
       includeEmail: true
     },
     (token, tokenSecret, profile, done) => {
@@ -51,8 +51,8 @@ router.post('/twitter/reverse', (req, res) => {
       url: 'https://api.twitter.com/oauth/request_token',
       oauth: {
         oauth_callback: 'http://127.0.0.1:3000/',
-        consumer_key: 'ggav0NYrjucilG6qyLzXQhqY5',
-        consumer_secret: 'EzseR9UJlENQa4LpVrIeli1wxsCgypCS6drTgCICsPR9la6Uif'
+        consumer_key: process.env.CONSUMER_KEY,
+        consumer_secret: process.env.CONSUMER_SECRET
       }
     },
     (err, r, body) => {
@@ -75,8 +75,8 @@ router.post(
       {
         url: `https://api.twitter.com/oauth/access_token?oauth_verifier`,
         oauth: {
-          consumer_key: 'ggav0NYrjucilG6qyLzXQhqY5',
-          consumer_secret: 'EzseR9UJlENQa4LpVrIeli1wxsCgypCS6drTgCICsPR9la6Uif',
+          consumer_key: process.env.CONSUMER_KEY,
+          consumer_secret: process.env.CONSUMER_SECRET,
           token: req.query.oauth_token
         },
         form: { oauth_verifier: req.query.oauth_verifier }
@@ -105,14 +105,23 @@ router.post(
     }
 
     // prepare token for API
-    req.auth = {
-      id: req.user.id
+    // req.auth = {
+    //   id: req.user.id
+    // };
+
+    // const messages = await axios.get('')
+
+    const response = {
+      id: req.user.id,
+      token: req.body.oauth_token
     };
 
-    return next();
-  },
-  generateToken,
-  sendToken
+    res.status(200).json(response);
+
+    // return next();
+  }
+  // generateToken,
+  // sendToken
 );
 
 export default router;

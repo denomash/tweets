@@ -3,11 +3,13 @@ import morgan from 'morgan';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import passport from 'passport';
-import { Strategy } from 'passport-twitter';
 import session from 'express-session';
 import mongoose from 'mongoose';
+import dotenv from 'dotenv';
 
 import auth from './routes/auth';
+
+dotenv.config();
 
 const PORT = 8080 || process.env.PORT;
 
@@ -28,6 +30,8 @@ app.use(
 
 app.use(passport.initialize());
 app.use(passport.session());
+
+// Connect to the database
 mongoose.connect(
   'mongodb://localhost/tweetEdu',
   { useNewUrlParser: true },
