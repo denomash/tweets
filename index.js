@@ -8,6 +8,7 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 
 import auth from './routes/auth';
+import twitterActions from './routes/twitterActions';
 
 dotenv.config();
 
@@ -15,6 +16,7 @@ const PORT = 8080 || process.env.PORT;
 
 const app = express();
 
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(morgan('dev'));
 // Allow cross origin
@@ -39,5 +41,6 @@ mongoose.connect(
 );
 
 app.use('/auth', auth);
+app.use('/', twitterActions);
 
 app.listen(PORT, () => console.log(`Running on localhost:${PORT}`));

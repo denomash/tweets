@@ -1,7 +1,6 @@
 import express from 'express';
 import passport from 'passport';
 import request from 'request';
-import jwt from 'jsonwebtoken';
 import TwitterTokenStrategy from 'passport-twitter-token';
 
 import User from '../models/User';
@@ -11,8 +10,8 @@ const router = express.Router();
 passport.use(
   new TwitterTokenStrategy(
     {
-      consumerKey: process.env.CONSUMER_KEY,
-      consumerSecret: process.env.CONSUMER_SECRET,
+      consumerKey: 'WsQCoFdIecg8dGe7MIM6q0Qfa',
+      consumerSecret: '8t8Yt6T4XiOyD7RxRZ5BN9urIyJPE7EpludE3ToB4viGPzbE0I',
       includeEmail: true
     },
     (token, tokenSecret, profile, done) => {
@@ -22,28 +21,6 @@ passport.use(
     }
   )
 );
-
-var createToken = auth => {
-  return jwt.sign(
-    {
-      id: auth.id
-    },
-    'my-secret',
-    {
-      expiresIn: 60 * 120
-    }
-  );
-};
-
-var generateToken = (req, res, next) => {
-  req.token = createToken(req.auth);
-  return next();
-};
-
-var sendToken = (req, res) => {
-  res.setHeader('x-auth-token', req.token);
-  return res.status(200).send(JSON.stringify(req.user));
-};
 
 router.post('/twitter/reverse', (req, res) => {
   request.post(
@@ -91,6 +68,8 @@ router.post(
         const parsedBody = JSON.parse(bodyString);
 
         req.body['oauth_token'] = parsedBody.oauth_token;
+        console.log('oauth_token', parsedBody.oauth_token);
+
         req.body['oauth_token_secret'] = parsedBody.oauth_token_secret;
         req.body['user_id'] = parsedBody.user_id;
 
@@ -104,24 +83,14 @@ router.post(
       return res.send(401, 'User Not Authenticated');
     }
 
-    // prepare token for API
-    // req.auth = {
-    //   id: req.user.id
-    // };
-
-    // const messages = await axios.get('')
-
     const response = {
       id: req.user.id,
-      token: req.body.oauth_token
+      token: req.body.oauth_token,
+      user: req.user
     };
 
     res.status(200).json(response);
-
-    // return next();
   }
-  // generateToken,
-  // sendToken
 );
 
 export default router;
