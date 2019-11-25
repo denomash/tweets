@@ -45,7 +45,6 @@ class AuthController {
         const parsedBody = JSON.parse(bodyString);
 
         req.body['oauth_token'] = parsedBody.oauth_token;
-        console.log('oauth_token', parsedBody.oauth_token);
 
         req.body['oauth_token_secret'] = parsedBody.oauth_token_secret;
         req.body['user_id'] = parsedBody.user_id;

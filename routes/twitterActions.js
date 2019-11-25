@@ -10,7 +10,7 @@ router.get('/twitter/timeline', (req, res, next) => {
       oauth: {
         consumer_key: process.env.CONSUMER_KEY,
         consumer_secret: process.env.CONSUMER_SECRET,
-        token: '3046070274-tikYchHmV7c6TemVurLNFO5Vy4ALfPJHyeYHktI'
+        token: process.env.TOKEN
       }
     },
     (err, r, body) => {
