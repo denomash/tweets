@@ -1,29 +1,48 @@
 import express from 'express';
 import request from 'request';
+import Twitter from 'twitter';
 
 const router = express.Router();
 
-router.get('/twitter/timeline', (req, res, next) => {
-  request.get(
-    {
-      url: `https://api.twitter.com/1.1/statuses/home_timeline.json`,
-      oauth: {
-        consumer_key: process.env.CONSUMER_KEY,
-        consumer_secret: process.env.CONSUMER_SECRET,
-        token: process.env.TOKEN
-      }
-    },
-    (err, r, body) => {
-      if (err) {
-        return res.send(500, { message: err.message });
-      }
+const client = new Twitter({
+  consumer_key: process.env.CONSUMER_KEY,
+  consumer_secret: process.env.CONSUMER_SECRET,
+  bearer_token: process.env.BEARER_TOKEN
+});
 
-      const bodyString =
-        '{ "' + body.replace(/&/g, '", "').replace(/=/g, '": "') + '"}';
+router.get('/twitter/timeline', async (req, res, next) => {
+  const params = { screen_name: 'nodejs' };
 
-      res.status(200).json(body);
+  await client.get('statuses/user_timeline', params, function(
+    error,
+    tweets,
+    response
+  ) {
+    if (!error) {
+      console.log(tweets.length);
+      const data = [];
+      tweets.map(tweet => {
+        data.push({
+          id: tweet.id,
+          id_str: tweet.id_str,
+          text: tweet.text,
+          user: {
+            userId: tweet.user.id_str,
+            name: tweet.user.name,
+            screen_name: tweet.user.screen_name,
+            location: tweet.user.location,
+            description: tweet.user.description,
+            profile_image_url: tweet.user.profile_image_url
+          }
+        });
+      });
+      res.send(data);
     }
-  );
+    if (error) {
+      console.log(error);
+      res.send(error);
+    }
+  });
 });
 
 export default router;
