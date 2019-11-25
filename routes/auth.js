@@ -1,27 +1,12 @@
 import express from 'express';
 import passport from 'passport';
-import TwitterTokenStrategy from 'passport-twitter-token';
 
-import User from '../models/User';
+import passportConfig from '../passport';
 import AuthController from '../Controllers/auth';
-import * as twitterConfig from '../twitter.config';
 
 const router = express.Router();
 
-passport.use(
-  new TwitterTokenStrategy(
-    {
-      consumerKey: twitterConfig.CONSUMER_KEY,
-      consumerSecret: twitterConfig.CONSUMER_SECRET,
-      includeEmail: true
-    },
-    (token, tokenSecret, profile, done) => {
-      User.upsertTwitterUser(token, tokenSecret, profile, (err, user) => {
-        return done(err, user);
-      });
-    }
-  )
-);
+passportConfig();
 
 router.post('/twitter/reverse', AuthController.requestToken);
 
