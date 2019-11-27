@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Node Challenge",
   "main": "index.js",
-  "author": "Kamya Dominic",
+  "author": "Dennis Macharia",
   "license": "MIT",
   "scripts": {
     "start": "babel-node -- index.js",
