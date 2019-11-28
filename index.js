@@ -34,11 +34,16 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // Connect to the database
-mongoose.connect(
-  'mongodb://localhost/tweetEdu',
-  { useNewUrlParser: true },
-  () => console.log('Connected to the database')
+
+const uri = process.env.DATABASE_URL;
+
+mongoose.connect(uri, { useNewUrlParser: true }, () =>
+  console.log('Connected to the database')
 );
+
+const db = mongoose.connection;
+
+db.on('error', console.error.bind(console, 'connection error:'));
 
 app.use('/auth', auth);
 app.use('/', twitterActions);
